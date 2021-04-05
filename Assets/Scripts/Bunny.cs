@@ -14,27 +14,31 @@ public class Bunny : MonoBehaviour
     private Animator _anim;
     private bool _isGrounded = true;
     private int _eggsLaid = 0;
+    private int _hopHash = Animator.StringToHash("HopStart");
+    private int _landHash = Animator.StringToHash("HopLand");
     private Rigidbody _rigidbody;
+    private WaitForSeconds _jumpWait;
     
     // Start is called before the first frame update
     void Start()
     {
         _anim = GetComponent<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
+        _jumpWait = new WaitForSeconds(_jumpDelay);
 
         StartCoroutine(JumpRoutine());
     }
 
     private void JumpAnim()
     {
-        _anim.SetTrigger("HopStart");
+        _anim.SetTrigger(_hopHash);
     }
 
     private IEnumerator JumpRoutine()
     {
         while (_eggsLaid < _colors.Length - 1)
         {
-            yield return new WaitForSeconds(_jumpDelay);
+            yield return _jumpWait;
             JumpAnim();
         }
     }
@@ -51,7 +55,7 @@ public class Bunny : MonoBehaviour
         {
             if (!_isGrounded)
             {
-                _anim.SetTrigger("HopLand");
+                _anim.SetTrigger(_landHash);
                 _isGrounded = true;
             }
         }
